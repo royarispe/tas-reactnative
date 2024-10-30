@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export type imageList = {
@@ -76,12 +77,37 @@ const DATA: imageList[] = [
 ];
 
 export default function TabTwoScreen() {
+
+  const [images, setImages] = useState<imageList[]>([]);
+  const [otherImages, setOtherImages] = useState<imageList[]>([]);
+
+  useEffect(() => {
+    setImages(DATA.splice(0, 4))
+    setOtherImages(DATA.splice(4))
+  }, [])
+
+  const changePhoto = (id: string) => {
+    const imageIndex = images.findIndex((image) => image.id === id);
+
+    if (imageIndex !== -1 && otherImages.length > 0) {
+      const newOtherImages = [...otherImages];
+      const newImage = newOtherImages.shift()!;
+      const updatedImages = [...images];
+
+      updatedImages[imageIndex] = newImage;
+      setImages(updatedImages);
+      setOtherImages([...newOtherImages, images[imageIndex]]);
+    }
+  };
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <FlatList
-          data={DATA}
-          renderItem={({ item }) => <ImageView image={item} />}
+          data={images}
+          renderItem={({ item }) => (
+            <ImageView image={item} changePhoto={() => changePhoto(item.id)} />
+          )}
           keyExtractor={(image) => image.id}
           contentContainerStyle={styles.listContainer}
         ></FlatList>

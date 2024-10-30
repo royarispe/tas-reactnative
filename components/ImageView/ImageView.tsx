@@ -1,13 +1,18 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { imageList } from "@/app/(tabs)/explore";
 
-const ImageView = ({ image }: { image: imageList }) => {
+type ImageViewProps = {
+  image: imageList;
+  changePhoto: () => void;
+};
+
+const ImageView = ({ image, changePhoto }: ImageViewProps) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: image.link }} style={styles.image}></Image>
       <View style={styles.bottomPhoto}>
         <Text style={styles.description}>{image.description}</Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={changePhoto}>
           <Text>Cambiar foto</Text>
         </TouchableOpacity>
       </View>
