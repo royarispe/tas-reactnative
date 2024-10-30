@@ -1,18 +1,112 @@
-import { Button, Dimensions, SafeAreaView, View, ScrollView, Text, TextInput, Image, StyleSheet, Platform } from 'react-native';
-import { red } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
+import {
+  Button,
+  TouchableOpacity,
+  Dimensions,
+  SafeAreaView,
+  View,
+  ScrollView,
+  Text,
+  TextInput,
+  Image,
+  StyleSheet,
+  Platform,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import Task from "./../../components/tasks/Task";
 
 export default function HomeScreen() {
-  const { width, height } = Dimensions.get('window')
+  const [task, setTask] = useState<string>("");
+  const [tasks, setTasks] = useState<string[]>([]);
+  const [comp, setComp] = useState<number>(0);
+  const [todo, setTodo] = useState<number>(0);
+
+  const addTask = () => {
+    if (task.trim() !== "") {
+      setTasks([...tasks, task]);
+      setTask("");
+    }
+  };
+
+  const deleteTask = (index: number) => {
+    setTasks(tasks.filter((_, i) => i !== index));
+  };
+
+  const addTodoTask = () => {
+    setTodo((prev) => prev + 1);
+  };
+
+  const lessTodoTask = () => {
+    setTodo((prev) => {
+      if (prev > 0) {
+        return prev - 1;
+      }
+      return prev;
+    });
+  };
+
+  const addCompTask = () => {
+    setComp((prev) => prev + 1);
+  };
+
+  const lessCompTask = () => {
+    setComp((prev) => {
+      if (prev > 0) {
+        return prev - 1;
+      }
+      return prev;
+    });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <Text style={styles.text}>Ingrese una nueva tarea</Text>
-        <TextInput style={styles.input} value={'Ingrese la nueva tarea'}></TextInput>
-        <Button title='Añadir tarea'></Button>
+        <TextInput
+          style={styles.input}
+          value={task}
+          onChangeText={setTask}
+          placeholder="Ingrese una nueva tarea"
+        ></TextInput>
+        <View style={styles.buttonsContainer}>
+          <View style={styles.sectionPart2}>
+            <View style={styles.todoContainer}>
+              <Text>Pendientes: {todo}</Text>
+              <TouchableOpacity
+                style={styles.btnListPlus}
+                onPress={addTodoTask}
+              >
+                <Text style={styles.plusBtn}>+</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnListLess}
+                onPress={lessTodoTask}
+              >
+                <Text style={styles.lessBtn}>-</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.completeContainer}>
+              <Text>Completadas: {comp}</Text>
+              <TouchableOpacity
+                style={styles.btnListPlus}
+                onPress={addCompTask}
+              >
+                <Text style={styles.plusBtn}>+</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnListLess}
+                onPress={lessCompTask}
+              >
+                <Text style={styles.lessBtn}>-</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Button title="Añadir tarea" onPress={addTask}></Button>
+        </View>
       </View>
-      <ScrollView>
-
+      <ScrollView style={styles.tasksContainer}>
+        {tasks.map((t, index) => (
+          <Task key={index} value={t} onDelete={() => deleteTask(index)} />
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
@@ -20,18 +114,66 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    justifyContent: 'center',
-    backgroundColor: 'red',
-    marginTop: 40
+    justifyContent: "center",
+    marginTop: 30,
+    margin: 5,
   },
   container: {
-    justifyContent: 'center',
-    alignItems: 'center'
+    borderWidth: 1,
+    padding: 10,
   },
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: 10,
+  },
+  todoContainer: {
+    flexDirection: "row",
+    marginVertical: 5,
+  },
+  completeContainer: {
+    flexDirection: "row",
+    marginVertical: 5,
+  },
+  btnListPlus: {
+    height: 25,
+    width: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    backgroundColor: "green",
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  btnListLess: {
+    height: 25,
+    width: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    backgroundColor: "red",
+    borderRadius: 5,
+  },
+  sectionPart2: {
+    flex: 1,
+  },
+  tasksContainer: {},
   text: {
     fontSize: 24,
+    lineHeight: 50,
+  },
+  plusBtn: {
+    fontSize: 17,
+  },
+  lessBtn: {
+    fontSize: 17,
   },
   input: {
-    
-  }
+    borderWidth: 1,
+    height: 40,
+    width: "80%",
+    paddingHorizontal: 5,
+    marginBottom: 10,
+  },
 });
