@@ -2,7 +2,6 @@ import {
   Button,
   TouchableOpacity,
   Dimensions,
-  SafeAreaView,
   View,
   ScrollView,
   Text,
@@ -11,6 +10,7 @@ import {
   StyleSheet,
   Platform,
 } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import Task from "./../../components/tasks/Task";
 
@@ -58,69 +58,67 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.text}>Ingrese una nueva tarea</Text>
-        <TextInput
-          style={styles.input}
-          value={task}
-          onChangeText={setTask}
-          placeholder="Ingrese una nueva tarea"
-        ></TextInput>
-        <View style={styles.buttonsContainer}>
-          <View style={styles.sectionPart2}>
-            <View style={styles.todoContainer}>
-              <Text>Pendientes: {todo}</Text>
-              <TouchableOpacity
-                style={styles.btnListPlus}
-                onPress={addTodoTask}
-              >
-                <Text style={styles.plusBtn}>+</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btnListLess}
-                onPress={lessTodoTask}
-              >
-                <Text style={styles.lessBtn}>-</Text>
-              </TouchableOpacity>
+    <SafeAreaProvider>
+      <SafeAreaView>
+        <View style={styles.container}>
+          <Text style={styles.text}>Ingrese una nueva tarea</Text>
+          <TextInput
+            style={styles.input}
+            value={task}
+            onChangeText={setTask}
+            placeholder="Ingrese una nueva tarea"
+          ></TextInput>
+          <View style={styles.buttonsContainer}>
+            <View style={styles.sectionPart2}>
+              <View style={styles.todoContainer}>
+                <Text>Pendientes: {todo}</Text>
+                <TouchableOpacity
+                  style={styles.btnListPlus}
+                  onPress={addTodoTask}
+                >
+                  <Text style={styles.plusBtn}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnListLess}
+                  onPress={lessTodoTask}
+                >
+                  <Text style={styles.lessBtn}>-</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.completeContainer}>
+                <Text>Completadas: {comp}</Text>
+                <TouchableOpacity
+                  style={styles.btnListPlus}
+                  onPress={addCompTask}
+                >
+                  <Text style={styles.plusBtn}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnListLess}
+                  onPress={lessCompTask}
+                >
+                  <Text style={styles.lessBtn}>-</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.completeContainer}>
-              <Text>Completadas: {comp}</Text>
-              <TouchableOpacity
-                style={styles.btnListPlus}
-                onPress={addCompTask}
-              >
-                <Text style={styles.plusBtn}>+</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btnListLess}
-                onPress={lessCompTask}
-              >
-                <Text style={styles.lessBtn}>-</Text>
-              </TouchableOpacity>
-            </View>
+            <Button title="Añadir tarea" onPress={addTask}></Button>
           </View>
-          <Button title="Añadir tarea" onPress={addTask}></Button>
         </View>
-      </View>
-      <ScrollView style={styles.tasksContainer}>
-        {tasks.map((t, index) => (
-          <Task key={index} value={t} onDelete={() => deleteTask(index)} />
-        ))}
-      </ScrollView>
-    </SafeAreaView>
+        <ScrollView style={styles.tasksContainer}>
+          {tasks.map((t, index) => (
+            <Task key={index} value={t} onDelete={() => deleteTask(index)} />
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    justifyContent: "center",
-    marginTop: 30,
-    margin: 5,
-  },
   container: {
     borderWidth: 1,
     padding: 10,
+    margin: 5,
   },
   buttonsContainer: {
     flexDirection: "row",
